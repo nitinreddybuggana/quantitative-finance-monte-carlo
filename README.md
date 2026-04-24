@@ -108,14 +108,3 @@ quantitative-finance-monte-carlo/
 ```
 
 ---
-
-## Author
-
-Nitin Reddy Buggana — First-year Computer Engineering student  
-Interests: quantitative finance, stochastic modelling, algorithmic systems
-
----
-
-## Licence
-
-MIT

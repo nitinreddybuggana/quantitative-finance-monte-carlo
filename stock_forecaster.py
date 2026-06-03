@@ -43,7 +43,7 @@ def fetch_data(ticker: str, period: str = '2y') -> tuple:
     """
     print(f"Fetching {ticker} data ({period} history)...")
     stock = yf.Ticker(ticker)
-    df    = stock.history(period = period)
+    df    = stock.history(period=period)
 
     if df.empty:
         raise ValueError(f"No data found for ticker '{ticker}'. Check the symbol.")
@@ -176,7 +176,7 @@ def plot_forecast(forecaster: StockForecaster, n_paths_shown: int = 100):
       1. Historical price + simulated forecast paths with percentile bands
       2. Distribution of final simulated prices
       3. Historical log-return distribution vs normal fit
-      4. Summary statistics table
+      4. Volatility stress test — final price distribution across σ scenarios
     """
     if forecaster.paths is None:
         forecaster.simulate()
@@ -197,11 +197,11 @@ def plot_forecast(forecaster: StockForecaster, n_paths_shown: int = 100):
     p75 = np.percentile(paths, 75, axis=0)
     p90 = np.percentile(paths, 90, axis=0)
 
-    fig = plt.figure(figsize=(14, 10))
+    fig = plt.figure(figsize=(14, 13))
     fig.suptitle(f'{forecaster.ticker} — Monte Carlo Stock Forecast '
                  f'({forecaster.forecast_days}-day, {forecaster.n_sims:,} simulations)',
                  fontsize=14, y=0.98)
-    gs = gridspec.GridSpec(2, 2, hspace=0.38, wspace=0.3)
+    gs = gridspec.GridSpec(3, 2, hspace=0.42, wspace=0.3)
 
     # ── Panel 1: Historical + forecast ────────────────────────────────────────
     ax1 = fig.add_subplot(gs[0, :])   # full-width top panel
@@ -236,6 +236,7 @@ def plot_forecast(forecaster: StockForecaster, n_paths_shown: int = 100):
 
     # ── Panel 2: Final price distribution ─────────────────────────────────────
     ax2 = fig.add_subplot(gs[1, 0])
+
     itm = finals[finals >= forecaster.S0]
     otm = finals[finals <  forecaster.S0]
     ax2.hist(otm, bins=50, color='#993C1D', alpha=0.7, label='Below current')
@@ -271,8 +272,48 @@ def plot_forecast(forecaster: StockForecaster, n_paths_shown: int = 100):
     sig_d = log_returns.std()
     ax3.text(0.97, 0.95, f'μ={mu_d*100:.3f}%/d\nσ={sig_d*100:.2f}%/d',
              transform=ax3.transAxes, fontsize=9, va='top', ha='right',
-             color='#444441',
+             color='var(--color-text-secondary)',
              bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
+
+    # ── Panel 4: Volatility stress test ───────────────────────────────────────
+    ax4 = fig.add_subplot(gs[2, :])   # full-width bottom panel
+
+    calibrated_sigma = forecaster.sigma
+    # Build stress scenarios around the calibrated vol
+    vol_scenarios = [
+        (calibrated_sigma * 0.5,  f'σ={calibrated_sigma*0.5*100:.0f}% (half vol)',   '#185FA5'),
+        (calibrated_sigma * 0.75, f'σ={calibrated_sigma*0.75*100:.0f}% (low vol)',    '#1D9E75'),
+        (calibrated_sigma,        f'σ={calibrated_sigma*100:.0f}% (calibrated ✓)',    '#BA7517'),
+        (calibrated_sigma * 1.5,  f'σ={calibrated_sigma*1.5*100:.0f}% (high vol)',    '#D85A30'),
+        (calibrated_sigma * 2.0,  f'σ={calibrated_sigma*2.0*100:.0f}% (stress)',      '#A32D2D'),
+    ]
+
+    for vol, label, color in vol_scenarios:
+        stress = StockForecaster.__new__(StockForecaster)
+        stress.S0 = forecaster.S0
+        stress.mu = forecaster.mu
+        stress.sigma = vol
+        stress.forecast_days = forecaster.forecast_days
+        stress.n_sims = forecaster.n_sims
+        stress.steps = forecaster.steps
+        stress.dt = forecaster.dt
+        np.random.seed(42)
+        stress_paths = stress.simulate()
+        stress_finals = stress_paths[:, -1]
+        ax4.hist(stress_finals, bins=60, density=True, alpha=0.45,
+                 color=color, label=label)
+
+    ax4.axvline(forecaster.S0, color='#444441', lw=2, linestyle='--',
+                label=f'Current ${forecaster.S0:.2f}')
+    ax4.set_title(
+        f'Volatility stress test — final price distribution after '
+        f'{forecaster.forecast_days} days across σ scenarios',
+        fontsize=11
+    )
+    ax4.set_xlabel('Price ($)')
+    ax4.set_ylabel('Density')
+    ax4.legend(fontsize=9, loc='upper right')
+    ax4.grid(True, alpha=0.25)
 
     plt.savefig(f'{forecaster.ticker}_forecast.png', dpi=150, bbox_inches='tight')
     plt.show()
@@ -327,4 +368,3 @@ if __name__ == '__main__':
     print_report(forecaster)
     print('\nGenerating plots...')
     plot_forecast(forecaster)
-

@@ -272,7 +272,7 @@ def plot_forecast(forecaster: StockForecaster, n_paths_shown: int = 100):
     sig_d = log_returns.std()
     ax3.text(0.97, 0.95, f'μ={mu_d*100:.3f}%/d\nσ={sig_d*100:.2f}%/d',
              transform=ax3.transAxes, fontsize=9, va='top', ha='right',
-             color='var(--color-text-secondary)',
+             color='#444441',
              bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
 
     # ── Panel 4: Volatility stress test ───────────────────────────────────────
@@ -295,8 +295,8 @@ def plot_forecast(forecaster: StockForecaster, n_paths_shown: int = 100):
         stress.sigma = vol
         stress.forecast_days = forecaster.forecast_days
         stress.n_sims = forecaster.n_sims
-        stress.steps = forecaster.steps
-        stress.dt = forecaster.dt
+        stress.steps = int(forecaster.forecast_days)
+        stress.dt = 1/252
         np.random.seed(42)
         stress_paths = stress.simulate()
         stress_finals = stress_paths[:, -1]

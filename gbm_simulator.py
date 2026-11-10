@@ -240,7 +240,7 @@ def print_report(S0=100, mu=0.08, sigma=0.20, T=1.0, N=10_000):
     pop = prob_above(paths, S0) * 100
     print(f'\n  Probability final price > S₀: {pop:.1f}%')
     print(f'  Probability final price > 2×S₀: {prob_above(paths, 2*S0)*100:.1f}%')
-    print(f'  Probability of >20% loss:       {prob_above(paths, S0*0.8)*100:.1f}% above 0.8×S₀')
+    print(f'  Probability of >20% loss:       {(1 - prob_above(paths, S0*0.8))*100:.1f}%')
     print('=' * 58)
 
 

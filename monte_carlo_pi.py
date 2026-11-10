@@ -17,7 +17,6 @@ import random
 import math
 import time
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 import numpy as np
 
 
@@ -117,7 +116,7 @@ def plot_simulation(n_samples: int = 5_000, seed: int = 42):
     plt.tight_layout()
     plt.savefig("monte_carlo_scatter.png", dpi=150)
     plt.show()
-    print(f"Saved: monte_carlo_scatter.png")
+    print("Saved: monte_carlo_scatter.png")
     return pi_est
 
 

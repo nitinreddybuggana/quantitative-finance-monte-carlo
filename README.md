@@ -23,6 +23,14 @@ All three share the same core engine: generate enough random samples, and the av
 
 ---
 
+## Setup
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
 ## Projects
 
 ### 1. Monte Carlo Pi Estimation — `monte_carlo_pi.py`
@@ -34,9 +42,12 @@ This project establishes the two ideas everything else builds on. First, the **L
 **Key concepts:** Law of Large Numbers · geometric probability · Monte Carlo convergence · 1/√N error decay
 
 ```bash
-pip install matplotlib numpy
 python monte_carlo_pi.py
 ```
+
+![Random points inside and outside the unit circle](monte_carlo_scatter.png)
+
+![Convergence of the π estimate and 1/√N error decay](monte_carlo_convergence.png)
 
 ---
 
@@ -49,9 +60,10 @@ Prices evolve as dS = μS dt + σS dW, simulated with the exact discretisation S
 **Key concepts:** stochastic differential equations · exact GBM discretisation · log-normal terminal prices · percentile bands · drift and volatility sensitivity
 
 ```bash
-pip install numpy matplotlib scipy
 python gbm_simulator.py
 ```
+
+![GBM simulation: paths, final price distribution, log-returns and volatility sensitivity](gbm_simulation.png)
 
 ---
 
@@ -66,9 +78,10 @@ What makes this project distinct from a purely theoretical simulation is the cal
 **Key concepts:** Geometric Brownian Motion · Itô's lemma · log-normal distribution · model calibration from real data · percentile fan charts · probability of profit/loss
 
 ```bash
-pip install numpy matplotlib scipy yfinance
 python stock_forecaster.py
 ```
+
+![AAPL 30-day Monte Carlo forecast](AAPL_forecast.png)
 
 ---
 
@@ -96,6 +109,7 @@ The error in every case shrinks at the same rate: **σ/√N**, where σ is the s
 quantitative-finance-monte-carlo/
 │
 ├── README.md                  ← you are here
+├── LICENSE                    # MIT
 ├── requirements.txt           # Dependencies
 ├── monte_carlo_pi.py          # Phase 1: Pi estimation
 ├── gbm_simulator.py           # Phase 2: GBM simulation from assumed parameters
@@ -107,7 +121,7 @@ quantitative-finance-monte-carlo/
 
 ## Author
 
-Nitin Reddy Buggana — First-year Computer Engineering student  
+Nitin Reddy Buggana — Computer Engineering student, HKUST  
 Interests: quantitative finance, stochastic modelling, algorithmic systems
 
 ---

@@ -20,9 +20,7 @@ import matplotlib.gridspec as gridspec
 import matplotlib.dates as mdates
 import yfinance as yf
 from scipy.stats import norm
-from datetime import datetime, timedelta
-import warnings
-warnings.filterwarnings('ignore')
+from datetime import timedelta
 
 
 # ─── Data fetching & calibration ─────────────────────────────────────────────

@@ -11,7 +11,7 @@ Workflow:
     4. Analyse the distribution of outcomes
     5. Visualise paths, percentile bands, and return distribution
 
-Author: [Your Name]
+Author: Nitin Reddy Buggana
 """
 
 import numpy as np

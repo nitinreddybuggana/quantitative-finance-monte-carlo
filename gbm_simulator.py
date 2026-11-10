@@ -23,7 +23,7 @@ Key outputs:
     - Log-return distribution vs theoretical normal
     - Sensitivity analysis (drift and volatility)
 
-Author: [Your Name]
+Author: Nitin Reddy Buggana
 """
 
 import numpy as np

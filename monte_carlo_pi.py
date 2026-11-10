@@ -10,7 +10,7 @@ Concept:
   - Ratio           = π / 4
   - So: π ≈ 4 × (points inside circle / total points)
 
-Author: [Your Name]
+Author: Nitin Reddy Buggana
 """
 
 import random

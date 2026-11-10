@@ -40,7 +40,22 @@ python monte_carlo_pi.py
 
 ---
 
-### 2. Monte Carlo Stock Forecaster — `stock_forecaster.py`
+### 2. Geometric Brownian Motion Simulator — `gbm_simulator.py`
+
+The theory step. Before touching real market data, this project simulates stock price paths from assumed parameters (S₀, μ, σ) to understand how GBM behaves in isolation.
+
+Prices evolve as dS = μS dt + σS dW, simulated with the exact discretisation S(t+dt) = S(t)·exp[(μ − ½σ²)dt + σ√dt·Z], so there is no Euler approximation error. The simulator checks the simulated log-returns against their theoretical normal distribution, plots 10th/50th/90th percentile bands, and runs a sensitivity analysis on drift and volatility.
+
+**Key concepts:** stochastic differential equations · exact GBM discretisation · log-normal terminal prices · percentile bands · drift and volatility sensitivity
+
+```bash
+pip install numpy matplotlib scipy
+python gbm_simulator.py
+```
+
+---
+
+### 3. Monte Carlo Stock Forecaster — `stock_forecaster.py`
 
 The bridge between pure probability and real-world finance. Instead of sampling random points in a square, we now sample random shocks to a real stock price — fetching live historical data, calibrating the model, and simulating thousands of possible futures.
 
@@ -68,9 +83,10 @@ where X_i is a random sample, and f is some function of interest.
 | Project | X_i | f(X_i) | Answer |
 |---|---|---|---|
 | Pi estimation | Uniform point (x, y) | 1 if x²+y² ≤ 1, else 0 | π/4 |
+| GBM simulator | Random shock Z ~ N(0,1) | GBM price path S(t) with assumed μ, σ | Theoretical price distribution |
 | Stock forecaster | Random shock Z ~ N(0,1) | GBM price path S(t) | Distribution of future prices |
 
-The error in both cases shrinks at the same rate: **σ/√N**, where σ is the standard deviation of f(X). This is the Central Limit Theorem — the unifying theorem beneath both projects.
+The error in every case shrinks at the same rate: **σ/√N**, where σ is the standard deviation of f(X). This is the Central Limit Theorem — the unifying theorem beneath all three projects.
 
 ---
 
@@ -80,8 +96,11 @@ The error in both cases shrinks at the same rate: **σ/√N**, where σ is the s
 quantitative-finance-monte-carlo/
 │
 ├── README.md                  ← you are here
+├── requirements.txt           # Dependencies
 ├── monte_carlo_pi.py          # Phase 1: Pi estimation
-└── stock_forecaster.py        # Phase 2: Stock price forecasting
+├── gbm_simulator.py           # Phase 2: GBM simulation from assumed parameters
+├── stock_forecaster.py        # Phase 3: Stock price forecasting from real data
+└── *.png                      # Output charts
 ```
 
 ---
